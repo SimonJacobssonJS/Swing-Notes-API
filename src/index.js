@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use('/api/notes', notesRoute);
 app.use('/api/user', userRoute);
 
-// Mounta Swagger UI
+// Mount Swagger UI
 setupSwagger(app);
 
 sequelize
@@ -28,7 +28,7 @@ sequelize
   });
 
 sequelize
-  .sync({ alter: true })
+  .sync({ force: true })
   .then(() => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () =>

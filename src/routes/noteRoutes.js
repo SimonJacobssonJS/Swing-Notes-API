@@ -4,8 +4,6 @@ const router = express.Router();
 const { authenticate } = require('../middleware/auth');
 const notesController = require('../controllers/noteControllers');
 
-router.use(authenticate);
-
 /**
 Nedanför ser du router med swagger för:
 GET
@@ -13,6 +11,9 @@ POST
 PUT
 DELETE
  */
+
+//Routes som kräver auth, getAllnotes över för att vara öppen för alla
+router.use(authenticate);
 
 router.get('/', notesController.getAllNotes);
 /**
