@@ -19,13 +19,13 @@ const options = {
         Note: {
           type: 'object',
           properties: {
-            id: { type: 'string', format: 'uuid' },
+            noteId: { type: 'string', format: 'uuid' },
             title: { type: 'string', maxLength: 50 },
             text: { type: 'string', maxLength: 300 },
             createdAt: { type: 'string', format: 'date-time' },
             modifiedAt: { type: 'string', format: 'date-time' },
           },
-          required: ['title', 'text'],
+          required: ['noteId', 'title', 'text'],
         },
       },
       securitySchemes: {

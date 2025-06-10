@@ -32,23 +32,28 @@ exports.updateNote = async (req, res) => {
   const { title, text } = req.body;
   try {
     const note = await Note.findOne({
-      where: { id: req.params.id, userId: req.user.id },
+      where: { noteId: req.params.id, userId: req.user.id },
     });
-    if (!note) return res.sendStatus(404);
+    if (!note) {
+      console.error(
+        `Nota med id=${req.params.noteId} hittades inte för user ${req.user.id}`
+      );
+      return res.sendStatus(404);
+    }
     note.title = title ?? note.title;
     note.text = text ?? note.text;
     await note.save();
     return res.status(200).json(note);
   } catch (err) {
-    console.error(err);
-    return res.sendStatus(500);
+    console.error('updateNote error:', err);
+    return res.status(500).json({ message: err.message });
   }
 };
 
 exports.deleteNote = async (req, res) => {
   try {
     const rows = await Note.destroy({
-      where: { id: req.params.id, userId: req.user.id },
+      where: { noteId: req.params.noteId, userId: req.user.id },
     });
     if (!rows) return res.sendStatus(404);
     return res.sendStatus(204);

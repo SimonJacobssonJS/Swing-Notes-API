@@ -5,7 +5,7 @@ const sequelize = require('../utils/database');
 const Note = sequelize.define(
   'Note',
   {
-    id: {
+    noteId: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
