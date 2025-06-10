@@ -9,6 +9,10 @@ const options = {
       title: 'Notes API',
       version: '1.0.0',
       description: 'API för att hantera anteckningar',
+      servers: [
+        { url: 'http://localhost:3000', description: 'Developer server' },
+        { url: 'https://api.myapp.com', description: 'Production server' }, //change later probably
+      ],
     },
     components: {
       schemas: {

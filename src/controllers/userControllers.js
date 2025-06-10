@@ -1,0 +1,43 @@
+// src/controllers/userControllers.js
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+
+exports.signup = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ message: 'Email och lösenord krävs' });
+
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({ email, passwordHash: hash });
+    return res.status(201).json({ id: user.id, email: user.email });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Kunde inte skapa konto' });
+  }
+};
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return res.status(400).json({ message: 'Email och lösenord krävs' });
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(401).json({ message: 'Felaktiga uppgifter' });
+
+    const match = await bcrypt.compare(password, user.passwordHash);
+    if (!match) return res.status(401).json({ message: 'Felaktiga uppgifter' });
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      expiresIn: '6h',
+    });
+    return res.json({ token });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ message: 'Server error, Kunde inte logga in' });
+  }
+};

@@ -1,4 +1,4 @@
-// src/models/note.js
+// src/models/notes.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../utils/database');
 
@@ -9,6 +9,11 @@ const Note = sequelize.define(
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+    },
+    userId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: 'Users', key: 'id' },
     },
     title: {
       type: DataTypes.STRING(50),
@@ -32,10 +37,9 @@ const Note = sequelize.define(
     },
   },
   {
-    timestamps: false, // vi hanterar själva createdAt/modifiedAt
+    timestamps: false,
     hooks: {
       beforeUpdate: (note) => {
-        // uppdatera modifiedAt automatiskt
         note.modifiedAt = new Date();
       },
     },
