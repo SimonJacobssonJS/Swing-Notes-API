@@ -2,6 +2,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { UniqueConstraintError } = require('sequelize'); //sequilize error import
 
 exports.signup = async (req, res) => {
   const { email, password } = req.body;
@@ -13,7 +14,10 @@ exports.signup = async (req, res) => {
     const user = await User.create({ email, passwordHash: hash });
     return res.status(201).json({ id: user.id, email: user.email });
   } catch (err) {
-    console.error(err);
+    console.error('❌ Signup error:', err);
+    if (err instanceof UniqueConstraintError) {
+      return res.status(400).json({ message: 'Email redan registrerad' });
+    }
     return res.status(500).json({ message: 'Kunde inte skapa konto' });
   }
 };
