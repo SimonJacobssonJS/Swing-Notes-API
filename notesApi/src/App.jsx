@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import NotesList from './components/NotesList';
+import React from 'react';
+import './index.css';
 
 // mockdata for now, will change later but simpler to start with static data
 const initialNotes = [
@@ -14,6 +16,10 @@ const initialNotes = [
     authorAvatar: '',
   },
 ];
+
+<div className='bg-red-500 min-h-screen'>
+  <h1 className='text-white text-4xl'>If you see red, Tailwind works!</h1>
+</div>;
 
 export default function App() {
   const [notes, setNotes] = useState(initialNotes);
