@@ -3,7 +3,7 @@ import NoteCard from './NoteCard';
 export default function NotesList({ notes, onEdit, onDelete }) {
   return (
     <div className='min-h-screen bg-white flex flex-col items-center justify-center py-8'>
-      <h1 className='text-2xl font-bold mb-8 text-gray-900'>
+      <h1 className='text-2xl font-bold mb-8 text-gray-800'>
         Alla anteckningar
       </h1>
       <div
