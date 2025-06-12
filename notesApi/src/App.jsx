@@ -17,10 +17,6 @@ const initialNotes = [
   },
 ];
 
-<div className='bg-red-500 min-h-screen'>
-  <h1 className='text-white text-4xl'>If you see red, Tailwind works!</h1>
-</div>;
-
 export default function App() {
   const [notes, setNotes] = useState(initialNotes);
 
