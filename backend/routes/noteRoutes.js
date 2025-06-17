@@ -1,21 +1,11 @@
-// src/routes/notesRoutes.js
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../middleware/auth');
 const notesController = require('../controllers/noteControllers');
 
-/**
-Nedanför ser du router med swagger för:
-GET
-POST
-PUT
-DELETE
- */
-
-//Routes som kräver auth, getAllnotes över för att vara öppen för alla
+// Routes som kräver auth
 router.use(authenticate);
 
-router.get('/', notesController.getAllNotes);
 /**
  * @swagger
  * /api/notes:
@@ -35,8 +25,8 @@ router.get('/', notesController.getAllNotes);
  *       401:
  *         description: Saknar eller ogiltig JWT
  */
+router.get('/', notesController.getAllNotes);
 
-router.post('/', notesController.createNote);
 /**
  * @swagger
  * /api/notes:
@@ -61,19 +51,9 @@ router.post('/', notesController.createNote);
  *     responses:
  *       201:
  *         description: Anteckning skapad
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Note'
- *       400:
- *         description: Ogiltig input
- *       401:
- *         description: Saknar eller ogiltig JWT
- *       500:
- *         description: Serverfel
  */
+router.post('/', notesController.createNote);
 
-router.put('/:noteId', notesController.updateNote);
 /**
  * @swagger
  * /api/notes/{noteId}:
@@ -87,8 +67,6 @@ router.put('/:noteId', notesController.updateNote);
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: ID för anteckningen som ska uppdateras
  *     requestBody:
  *       required: true
  *       content:
@@ -106,24 +84,6 @@ router.put('/:noteId', notesController.updateNote);
  *     responses:
  *       200:
  *         description: Anteckning uppdaterad
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Note'
- *       400:
- *         description: Ogiltig input
- *       401:
- *         description: Saknar eller ogiltig JWT
- *       404:
- *         description: Anteckningen hittades inte
- *       500:
- *         description: Serverfel
- */
-
-router.delete('/:noteId', notesController.deleteNote);
-/**
- * @swagger
- * /api/notes/{noteId}:
  *   delete:
  *     summary: Ta bort en anteckning
  *     tags:
@@ -134,16 +94,11 @@ router.delete('/:noteId', notesController.deleteNote);
  *         required: true
  *         schema:
  *           type: string
- *           format: uuid
- *         description: ID för anteckningen som ska tas bort
  *     responses:
  *       204:
  *         description: Anteckningen borttagen
- *       401:
- *         description: Saknar eller ogiltig JWT
- *       404:
- *         description: Anteckningen hittades inte
- *       500:
- *         description: Serverfel
  */
+router.put('/:noteId', notesController.updateNote);
+router.delete('/:noteId', notesController.deleteNote);
+
 module.exports = router;

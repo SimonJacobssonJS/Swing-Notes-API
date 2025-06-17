@@ -3,9 +3,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs'); // ✅ This line was missing
 const setupSwagger = require('./swagger');
 const sequelize = require('./utils/database');
-
 const notesRoute = require('./routes/noteRoutes');
 const userRoute = require('./routes/userRoutes');
 
@@ -34,10 +34,17 @@ app.get('/api', (req, res) => {
 // Swagger
 setupSwagger(app);
 
-// Serve frontend (if deployed together)
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve frontend from Vite's build folder
+const publicPath = path.join(__dirname, '../frontend/dist');
+app.use(express.static(publicPath));
+
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  const indexPath = path.join(publicPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('Frontend not found');
+  }
 });
 
 // Database connect + sync
@@ -50,7 +57,7 @@ sequelize
   });
 
 sequelize
-  .sync() // No `force: true` to avoid data loss
+  .sync()
   .then(() => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () =>

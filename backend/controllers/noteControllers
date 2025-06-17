@@ -1,5 +1,5 @@
 // src/noteControllers/notes.js
-const Note = require('../../src/models/notes');
+const Note = require('../models/notes');
 
 exports.getAllNotes = async (req, res) => {
   try {

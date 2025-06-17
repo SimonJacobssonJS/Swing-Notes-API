@@ -1,6 +1,6 @@
-// src/swagger.js
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const path = require('path');
 
 const options = {
   definition: {
@@ -9,11 +9,11 @@ const options = {
       title: 'Notes API',
       version: '1.0.0',
       description: 'API för att hantera anteckningar',
-      servers: [
-        { url: 'http://localhost:3000', description: 'Developer server' },
-        { url: 'https://api.myapp.com', description: 'Production server' }, //change later probably
-      ],
     },
+    servers: [
+      { url: 'http://localhost:3000', description: 'Developer server' },
+      { url: 'https://api.myapp.com', description: 'Production server' },
+    ],
     components: {
       schemas: {
         Note: {
@@ -29,12 +29,16 @@ const options = {
         },
       },
       securitySchemes: {
-        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
       },
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ['./src/routes/*.js', './src/controllers/*.js'],
+  apis: [path.join(__dirname, 'routes/**/*.js')],
 };
 
 const spec = swaggerJSDoc(options);

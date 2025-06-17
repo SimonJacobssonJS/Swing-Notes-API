@@ -1,4 +1,4 @@
-// src/models/notes.js
+// /models/notes.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../utils/database');
 

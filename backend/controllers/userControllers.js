@@ -1,7 +1,7 @@
 // src/controllers/userControllers.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../../src/models/user');
+const User = require('../models/user');
 const { UniqueConstraintError } = require('sequelize'); //sequilize error import
 
 exports.signup = async (req, res) => {
