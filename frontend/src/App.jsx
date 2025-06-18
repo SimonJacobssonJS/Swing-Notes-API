@@ -11,6 +11,7 @@ import Banner from './components/Banner';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import { useEffect, useState } from 'react';
+import Footer from './components/Footer';
 
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('jwt'));
@@ -66,6 +67,7 @@ export default function App() {
             />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   );
