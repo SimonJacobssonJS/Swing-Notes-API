@@ -80,7 +80,7 @@ function NotesListWrapper() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error('❌ Kunde inte hämta anteckningar:', err);
+        console.error('❌ Kunde inte hämta några anteckningar:', err);
         setLoading(false);
       });
   }, []);

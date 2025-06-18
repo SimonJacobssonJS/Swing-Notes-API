@@ -1,4 +1,4 @@
-// src/noteControllers/notes.js
+// noteControllers/notes.js
 const Note = require('../models/notes');
 
 exports.getAllNotes = async (req, res) => {
@@ -39,7 +39,7 @@ exports.updateNote = async (req, res) => {
 
     if (!note) {
       console.error(
-        `❌ Anteckning med noteId=${noteId} hittades inte för user ${req.user.id}`
+        `❌ Anteckning med noteId=${noteId} hittades inte för användaren ${req.user.id}`
       );
       return res.status(404).json({ message: 'Anteckning hittades inte' });
     }
@@ -66,12 +66,16 @@ exports.deleteNote = async (req, res) => {
     });
 
     if (!rows) {
-      return res.status(404).json({ message: 'Anteckning kunde inte hittas' });
+      return res
+        .status(404)
+        .json({ message: 'Anteckningen kunde inte hittas' });
     }
 
     return res.status(200).json({ message: 'Anteckning är nu borttagen' });
   } catch (err) {
     console.error('❌ Fel vid borttagning:', err);
-    return res.status(500).json({ message: 'Serverfel vid borttagning' });
+    return res
+      .status(500)
+      .json({ message: 'Serverfel vid borttagning av anteckning' });
   }
 };
