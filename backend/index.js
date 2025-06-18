@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
-const fs = require('fs'); // ✅ This line was missing
+const fs = require('fs');
 const setupSwagger = require('./swagger');
 const sequelize = require('./utils/database');
 const notesRoute = require('./routes/noteRoutes');
@@ -25,6 +25,11 @@ app.use(
 // Body parser
 app.use(bodyParser.json());
 
+const history = require('connect-history-api-fallback');
+
+// Swagger
+setupSwagger(app);
+
 // API routes
 app.use('/api/notes', notesRoute);
 app.use('/api/user', userRoute);
@@ -34,8 +39,12 @@ app.get('/api', (req, res) => {
   res.json({ message: 'API is running!' });
 });
 
-// Swagger
-setupSwagger(app);
+app.use(
+  history({
+    index: '/index.html',
+    verbose: true, // optional for debugging
+  })
+);
 
 // Serve frontend from Vite's build folder
 const publicPath = path.join(__dirname, '../frontend/dist');
