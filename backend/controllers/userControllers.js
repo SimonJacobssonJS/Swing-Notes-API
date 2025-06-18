@@ -1,4 +1,4 @@
-// src/controllers/userControllers.js
+// controllers/userControllers.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -12,7 +12,14 @@ exports.signup = async (req, res) => {
   try {
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({ email, passwordHash: hash });
-    return res.status(201).json({ id: user.id, email: user.email });
+
+    return res.status(201).json({
+      message: 'Konto skapat',
+      user: {
+        id: user.id,
+        email: user.email,
+      },
+    });
   } catch (err) {
     console.error('❌ Signup error:', err);
     if (err instanceof UniqueConstraintError) {
