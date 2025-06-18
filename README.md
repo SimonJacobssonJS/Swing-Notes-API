@@ -34,9 +34,9 @@ cd frontend
 npm install
 npm run dev
 
-## Navigate to the App locally for testing locally or head over to the site
-*Local* http://localhost:5173
+## Navigate to the App locally for testing or head over to the site
 *Browser* https://swing-notes-frontend.onrender.com/
+*Local* http://localhost:5173
 
 ## Testing calls in Postman
 Signup *POST* https://swing-notes-api.onrender.com/api/user/signup
