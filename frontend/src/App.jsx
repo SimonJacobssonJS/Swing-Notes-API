@@ -7,7 +7,8 @@ import {
 } from 'react-router-dom';
 import NotesList from './components/NotesList';
 import Banner from './components/Banner';
-import LoginPage from './pages/LoginPage'; // 🔁 Create this if not done
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import { useEffect, useState } from 'react';
 
 export default function App() {
@@ -17,12 +18,17 @@ export default function App() {
     setToken(localStorage.getItem('jwt'));
   }, []);
 
+  //tokens and remove when logout
   const isAuthenticated = !!token;
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    setToken(null);
+  };
 
   return (
     <Router>
       <div className='relative min-h-screen bg-white flex flex-col items-center'>
-        <Banner />
+        <Banner isLoggedIn={isAuthenticated} onLogout={handleLogout} />
         <div className='absolute top-0 left-0 h-full w-20 bg-gradient-to-b from-sky-100 to-white rounded-r-3xl shadow-lg opacity-70 -z-10' />
         <div className='absolute top-0 right-0 h-full w-20 bg-gradient-to-b from-rose-100 to-white rounded-l-3xl shadow-lg opacity-70 -z-10' />
 
@@ -44,6 +50,17 @@ export default function App() {
                 <LoginPage
                   onLogin={() => setToken(localStorage.getItem('jwt'))}
                 />
+              }
+            />
+            <Route path='/signup' element={<SignupPage />} />
+            <Route
+              path='*'
+              element={
+                isAuthenticated ? (
+                  <Navigate to='/' replace />
+                ) : (
+                  <Navigate to='/login' replace />
+                )
               }
             />
           </Routes>

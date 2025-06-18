@@ -1,10 +1,12 @@
 // src/components/Banner.jsx
-export default function Banner() {
-  // Dummy handlers for now
-  const handleProfile = () => alert('Profile clicked!');
-  const handleLogin = () => alert('Login clicked!');
-  const handleSignup = () => alert('Signup clicked!');
-  const handleLogout = () => alert('Logout clicked!');
+import { useNavigate } from 'react-router-dom';
+
+export default function Banner({ isLoggedIn, onLogout }) {
+  const navigate = useNavigate();
+
+  const handleProfile = () => navigate('/');
+  const handleLogin = () => navigate('/login');
+  const handleSignup = () => navigate('/signup');
 
   return (
     <header className='w-full sticky top-0 z-30 bg-yellow-200 shadow-xl border-b-4 border-yellow-300'>
@@ -18,29 +20,36 @@ export default function Banner() {
           </span>
         </div>
         <div className='mt-4 md:mt-0 flex gap-4'>
-          <button
-            onClick={handleProfile}
-            className='bg-yellow-50 hover:bg-yellow-100 text-yellow-900 font-bold px-5 py-2 rounded-lg shadow border-2 border-yellow-300 flex items-center gap-2 transition-all duration-150 active:scale-95'>
-            <span role='img' aria-label='profile'>
-              👤
-            </span>
-            Profile
-          </button>
-          <button
-            onClick={handleLogin}
-            className='bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
-            Login
-          </button>
-          <button
-            onClick={handleSignup}
-            className='bg-yellow-100 hover:bg-yellow-50 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
-            Signup
-          </button>
-          <button
-            onClick={handleLogout}
-            className='bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
-            Logout
-          </button>
+          {isLoggedIn ? (
+            <>
+              <button
+                onClick={handleProfile}
+                className='bg-yellow-50 hover:bg-yellow-100 text-yellow-900 font-bold px-5 py-2 rounded-lg shadow border-2 border-yellow-300 flex items-center gap-2 transition-all duration-150 active:scale-95'>
+                <span role='img' aria-label='profile'>
+                  👤
+                </span>
+                Profile
+              </button>
+              <button
+                onClick={onLogout}
+                className='bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleLogin}
+                className='bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
+                Login
+              </button>
+              <button
+                onClick={handleSignup}
+                className='bg-yellow-100 hover:bg-yellow-50 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
+                Signup
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>

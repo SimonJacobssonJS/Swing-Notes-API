@@ -1,18 +1,16 @@
-// src/pages/LoginPage.jsx
+// src/pages/SignupPage.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function LoginPage({ onLogin }) {
+export default function SignupPage({ onSignup }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // ✅ error state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // reset previous error
 
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/user/login`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/user/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -20,21 +18,19 @@ export default function LoginPage({ onLogin }) {
 
     const data = await res.json();
     if (res.ok) {
-      localStorage.setItem('jwt', data.token);
-      onLogin();
-      navigate('/');
+      alert('Konto skapat! Du kan nu logga in.');
+      navigate('/login');
     } else {
-      setError(data.message || 'Login failed');
+      alert(data.message || 'Registrering misslyckades');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className='max-w-md mx-auto mt-10'>
-      <h2 className='text-2xl font-bold mb-4'>Logga in</h2>
-
+      <h2 className='text-2xl font-bold mb-4'>Skapa konto</h2>
       <input
         type='email'
-        placeholder='E‑post'
+        placeholder='E-post'
         className='w-full p-2 border mb-2'
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -42,17 +38,12 @@ export default function LoginPage({ onLogin }) {
       <input
         type='password'
         placeholder='Lösenord'
-        className='w-full p-2 border mb-2'
+        className='w-full p-2 border mb-4'
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-
-      {error && <div className='text-red-600 mb-4'>{error}</div>}
-
-      <button
-        type='submit'
-        className='bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold w-full py-2 rounded transition-all duration-150 active:scale-95'>
-        Logga in
+      <button type='submit' className='bg-yellow-400 px-4 py-2 rounded'>
+        Skapa konto
       </button>
     </form>
   );
