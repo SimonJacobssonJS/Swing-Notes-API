@@ -14,7 +14,10 @@ const app = express();
 // CORS for local frontend (dev mode)
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: [
+      'http://localhost:5173',
+      'https://swing-notes-frontend.onrender.com',
+    ],
     credentials: true,
   })
 );
@@ -26,7 +29,7 @@ app.use(bodyParser.json());
 app.use('/api/notes', notesRoute);
 app.use('/api/user', userRoute);
 
-// Health check
+// API check
 app.get('/api', (req, res) => {
   res.json({ message: 'API is running 🚀' });
 });
