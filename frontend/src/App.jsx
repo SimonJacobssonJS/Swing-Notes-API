@@ -6,6 +6,7 @@ import {
   Navigate,
 } from 'react-router-dom';
 import NotesList from './components/NotesList';
+import AddNoteForm from './components/AddNoteForm';
 import Banner from './components/Banner';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -75,44 +76,103 @@ function NotesListWrapper() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchNotes = async () => {
     const token = localStorage.getItem('jwt');
-    if (!token) {
-      console.warn('❌ Ingen JWT hittades i localStorage');
-      setLoading(false);
-      return;
-    }
-
-    fetch(`${import.meta.env.VITE_API_URL}/notes`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('⛔ Unauthorized or fetch error');
-        return res.json();
-      })
-      .then((data) => {
-        setNotes(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('❌ Kunde inte hämta några anteckningar:', err);
-        setLoading(false);
+    if (!token) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
+      if (!res.ok) throw new Error('Fetch error');
+      setNotes(await res.json());
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
   }, []);
 
-  if (loading) {
+  const addNote = async (title, text) => {
+    const token = localStorage.getItem('jwt');
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title, text }),
+    });
+    if (res.ok) {
+      const newNote = await res.json();
+      setNotes((prev) => [newNote, ...prev]);
+    } else {
+      alert('Failed to create note');
+    }
+  };
+
+  const updateNote = async (note, newTitle, newText) => {
+    const token = localStorage.getItem('jwt');
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/notes/${note.noteId}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title: newTitle, text: newText }),
+      }
+    );
+    if (res.ok) {
+      const updated = await res.json();
+      setNotes((prev) =>
+        prev.map((n) => (n.noteId === note.noteId ? updated : n))
+      );
+    } else {
+      alert('Failed to update note');
+    }
+  };
+
+  const deleteNote = async (note) => {
+    const token = localStorage.getItem('jwt');
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/notes/${note.noteId}`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    if (res.ok) {
+      setNotes((prev) => prev.filter((n) => n.noteId !== note.noteId));
+    } else {
+      alert('Failed to delete');
+    }
+  };
+
+  if (loading)
     return (
       <div className='text-gray-600 text-xl mt-10'>Laddar anteckningar...</div>
     );
-  }
 
   return (
-    <NotesList
-      notes={notes}
-      onEdit={(note) => alert(`Edit ${note.title}`)}
-      onDelete={(note) => alert(`Delete ${note.title}`)}
-    />
+    <>
+      <AddNoteForm onAdd={addNote} />
+      <NotesList
+        notes={notes}
+        onEdit={(n) => {
+          const newTitle = prompt('Ny titel:', n.title);
+          const newText = prompt('Ny text:', n.text);
+          if (newTitle != null && newText != null)
+            updateNote(n, newTitle, newText);
+        }}
+        onDelete={(n) => {
+          if (confirm(`Ta bort anteckning "${n.title}"?`)) deleteNote(n);
+        }}
+      />
+    </>
   );
 }
