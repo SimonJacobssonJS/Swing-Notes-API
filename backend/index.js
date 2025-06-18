@@ -31,7 +31,7 @@ app.use('/api/user', userRoute);
 
 // API check
 app.get('/api', (req, res) => {
-  res.json({ message: 'API is running 🚀' });
+  res.json({ message: 'API is running!' });
 });
 
 // Swagger

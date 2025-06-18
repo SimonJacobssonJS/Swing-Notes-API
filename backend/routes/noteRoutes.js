@@ -6,6 +6,7 @@ const notesController = require('../controllers/noteControllers');
 // Routes som kräver auth
 router.use(authenticate);
 
+router.get('/', notesController.getAllNotes);
 /**
  * @swagger
  * /api/notes:
@@ -25,8 +26,8 @@ router.use(authenticate);
  *       401:
  *         description: Saknar eller ogiltig JWT
  */
-router.get('/', notesController.getAllNotes);
 
+router.post('/', notesController.createNote);
 /**
  * @swagger
  * /api/notes:
@@ -52,8 +53,8 @@ router.get('/', notesController.getAllNotes);
  *       201:
  *         description: Anteckning skapad
  */
-router.post('/', notesController.createNote);
 
+router.put('/:noteId', notesController.updateNote);
 /**
  * @swagger
  * /api/notes/{noteId}:
@@ -98,7 +99,24 @@ router.post('/', notesController.createNote);
  *       204:
  *         description: Anteckningen borttagen
  */
-router.put('/:noteId', notesController.updateNote);
-router.delete('/:noteId', notesController.deleteNote);
 
+router.delete('/:noteId', notesController.deleteNote);
+/**
+ * @swagger
+ * /api/notes/{noteId}:
+ *   delete:
+ *     summary: Ta bort en anteckning
+ *     tags:
+ *       - Notes
+ *     parameters:
+ *       - in: path
+ *         name: noteId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID för anteckningen som ska tas bort
+ *     responses:
+ *       204:
+ *         description: Anteckningen har tagits bort
+ */
 module.exports = router;
