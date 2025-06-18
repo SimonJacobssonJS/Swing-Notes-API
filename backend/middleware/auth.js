@@ -14,7 +14,12 @@ exports.authenticate = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
     if (err) {
-      return res.status(403).json({ message: 'Ogiltig token' });
+      return res
+        .status(403)
+        .json({
+          message:
+            'Ogiltig token, JWT token som används är ej korrekt eller inte kopplad till ditt konto',
+        });
     }
     req.user = { id: payload.userId };
     next();
