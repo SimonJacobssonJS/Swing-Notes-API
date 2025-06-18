@@ -57,14 +57,21 @@ exports.updateNote = async (req, res) => {
 };
 
 exports.deleteNote = async (req, res) => {
+  const noteId = req.params.noteId;
+  const userId = req.user.id;
+
   try {
     const rows = await Note.destroy({
-      where: { noteId: req.params.noteId, userId: req.user.id },
+      where: { noteId, userId },
     });
-    if (!rows) return res.sendStatus(404);
-    return res.sendStatus(204);
+
+    if (!rows) {
+      return res.status(404).json({ message: 'Anteckning kunde inte hittas' });
+    }
+
+    return res.status(200).json({ message: 'Anteckning är nu borttagen' });
   } catch (err) {
-    console.error(err);
-    return res.sendStatus(500);
+    console.error('❌ Fel vid borttagning:', err);
+    return res.status(500).json({ message: 'Serverfel vid borttagning' });
   }
 };
