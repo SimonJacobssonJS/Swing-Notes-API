@@ -28,12 +28,12 @@ export default function Banner({ isLoggedIn, onLogout }) {
                 <span role='img' aria-label='profile'>
                   👤
                 </span>
-                Profile
+                Profil
               </button>
               <button
                 onClick={onLogout}
                 className='bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
-                Logout
+                Logga ut
               </button>
             </>
           ) : (
@@ -41,12 +41,12 @@ export default function Banner({ isLoggedIn, onLogout }) {
               <button
                 onClick={handleLogin}
                 className='bg-yellow-400 hover:bg-yellow-300 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
-                Login
+                Logga in
               </button>
               <button
                 onClick={handleSignup}
                 className='bg-yellow-100 hover:bg-yellow-50 text-yellow-900 font-bold px-6 py-2 rounded-lg shadow border-2 border-yellow-300 transition-all duration-150 active:scale-95'>
-                Signup
+                Skapa konto
               </button>
             </>
           )}
