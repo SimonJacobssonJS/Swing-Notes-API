@@ -8,6 +8,7 @@ An intuitive notes app with user registration, authentication, and full CRUD for
 
 - **User authentication** (sign-up, log-in with JWT)
 - **Notes management with CRUD** (create/read/update/delete your notes)
+- **Search function** Easily search for the title of your created notes
 - **Backend API** with Express, PostgreSQL, Sequelize
 - **Deployed** on Render (backend + frontend)
 - **Frontend app** with React, React Router, Tailwind CSS
