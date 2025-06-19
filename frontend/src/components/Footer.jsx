@@ -17,8 +17,10 @@ export default function Footer() {
           <a href='/terms' className='hover:underline'>
             Terms of Service
           </a>
-          <a href='/contact' className='hover:underline'>
-            Contact
+          <a
+            href='/https://github.com/SimonJacobssonJS/Swing-Notes-API'
+            className='hover:underline'>
+            Github
           </a>
         </div>
       </div>
