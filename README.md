@@ -51,8 +51,3 @@ Create note *POST* https://swing-notes-api.onrender.com/api/notes
 Get your notes *GET* https://swing-notes-api.onrender.com/api/notes
 Edit your note *PUT* https://swing-notes-api.onrender.com/api/notes/noteId  (replace noteId with yours)
 Delete a note *DELETE* https://swing-notes-api.onrender.com/api/notes/noteId  (replace noteId with yours)
-
-## Testing with terminal (bash)
-curl -X POST https://swing-notes-api.onrender.com/api/user/signup \
--H "Content-Type: application/json" \
--d 
