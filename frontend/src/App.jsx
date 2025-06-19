@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,7 +10,6 @@ import AddNoteForm from './components/AddNoteForm';
 import Banner from './components/Banner';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -20,7 +19,6 @@ export default function App() {
     setToken(localStorage.getItem('jwt'));
   }, []);
 
-  //tokens and remove when logout
   const isAuthenticated = !!token;
   const handleLogout = () => {
     localStorage.removeItem('jwt');
@@ -73,20 +71,41 @@ export default function App() {
   );
 }
 
-// This wrapper handles fetching notes
+// 🧠 Debounce Hook
+function useDebounce(value, delay = 500) {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debounced;
+}
+
 function NotesListWrapper() {
   const [notes, setNotes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearch = useDebounce(searchTerm, 500);
   const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem('jwt');
 
   const fetchNotes = async () => {
-    const token = localStorage.getItem('jwt');
     if (!token) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
+      const url = debouncedSearch
+        ? `${import.meta.env.VITE_API_URL}/notes?query=${encodeURIComponent(
+            debouncedSearch
+          )}`
+        : `${import.meta.env.VITE_API_URL}/notes`;
+
+      const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('Fetch error');
-      setNotes(await res.json());
+
+      if (!res.ok) throw new Error('Failed to fetch notes');
+      const data = await res.json();
+      setNotes(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -96,10 +115,9 @@ function NotesListWrapper() {
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [debouncedSearch]);
 
   const addNote = async (title, text) => {
-    const token = localStorage.getItem('jwt');
     const res = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
       method: 'POST',
       headers: {
@@ -117,7 +135,6 @@ function NotesListWrapper() {
   };
 
   const updateNote = async (note, newTitle, newText) => {
-    const token = localStorage.getItem('jwt');
     const res = await fetch(
       `${import.meta.env.VITE_API_URL}/notes/${note.noteId}`,
       {
@@ -140,7 +157,6 @@ function NotesListWrapper() {
   };
 
   const deleteNote = async (note) => {
-    const token = localStorage.getItem('jwt');
     const res = await fetch(
       `${import.meta.env.VITE_API_URL}/notes/${note.noteId}`,
       {
@@ -151,7 +167,7 @@ function NotesListWrapper() {
     if (res.ok) {
       setNotes((prev) => prev.filter((n) => n.noteId !== note.noteId));
     } else {
-      alert('Failed to delete');
+      alert('Failed to delete note');
     }
   };
 
@@ -162,19 +178,40 @@ function NotesListWrapper() {
 
   return (
     <>
+      <div className='w-full max-w-md mb-4'>
+        <input
+          id='search'
+          name='search'
+          type='text'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder='Sök efter titel...'
+          className='w-full p-2 border border-gray-300 rounded-lg shadow-sm'
+        />
+      </div>
+
       <AddNoteForm onAdd={addNote} />
-      <NotesList
-        notes={notes}
-        onEdit={(n) => {
-          const newTitle = prompt('Ny titel:', n.title);
-          const newText = prompt('Ny text:', n.text);
-          if (newTitle != null && newText != null)
-            updateNote(n, newTitle, newText);
-        }}
-        onDelete={(n) => {
-          if (confirm(`Ta bort anteckning "${n.title}"?`)) deleteNote(n);
-        }}
-      />
+
+      {notes.length === 0 ? (
+        <div className='text-gray-500 text-lg mt-4 italic'>
+          {searchTerm
+            ? 'Inga anteckningar matchade din sökning.'
+            : 'Du har inga anteckningar ännu.'}
+        </div>
+      ) : (
+        <NotesList
+          notes={notes}
+          onEdit={(n) => {
+            const newTitle = prompt('Ny titel:', n.title);
+            const newText = prompt('Ny text:', n.text);
+            if (newTitle != null && newText != null)
+              updateNote(n, newTitle, newText);
+          }}
+          onDelete={(n) => {
+            if (confirm(`Ta bort anteckning "${n.title}"?`)) deleteNote(n);
+          }}
+        />
+      )}
     </>
   );
 }

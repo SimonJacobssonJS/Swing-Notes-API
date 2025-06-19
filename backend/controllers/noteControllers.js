@@ -1,13 +1,27 @@
-// noteControllers/notes.js
+// controllers/noteControllers.js
+const { Op } = require('sequelize');
 const Note = require('../models/notes');
 
 exports.getAllNotes = async (req, res) => {
+  const userId = req.user.id;
+  const { query } = req.query;
+
   try {
-    const notes = await Note.findAll({ where: { userId: req.user.id } });
+    const where = {
+      userId,
+    };
+
+    if (query) {
+      where.title = { [Op.iLike]: `%${query}%` };
+    }
+
+    const notes = await Note.findAll({ where });
     return res.status(200).json(notes);
   } catch (err) {
-    console.error(err);
-    return res.sendStatus(500);
+    console.error('❌ getAllNotes error:', err);
+    return res
+      .status(500)
+      .json({ message: 'Fel vid hämtning av anteckningar' });
   }
 };
 

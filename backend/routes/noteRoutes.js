@@ -6,7 +6,8 @@ const notesController = require('../controllers/noteControllers');
 // Routes som kräver auth
 router.use(authenticate);
 
-router.get('/', notesController.getAllNotes);
+router.get('/', notesController.getAllNotes); // ✅ This is all you need
+
 /**
  * @swagger
  * /api/notes:
